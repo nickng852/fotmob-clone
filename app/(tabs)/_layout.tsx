@@ -1,59 +1,97 @@
-import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+import { Tabs } from 'expo-router'
+import { useColorScheme } from 'nativewind'
+import { FontAwesome, Ionicons } from '@expo/vector-icons'
 
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
+    name: React.ComponentProps<typeof FontAwesome>['name']
+    color: string
 }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+    return <FontAwesome size={26} style={{ marginBottom: -3 }} {...props} />
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+    const { colorScheme } = useColorScheme()
 
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="two"
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
+    return (
+        <Tabs
+            screenOptions={{
+                headerShown: false,
+                tabBarStyle: {
+                    backgroundColor:
+                        colorScheme === 'light' ? '#FFFFFF' : '#0A0A0A',
+                },
+                tabBarLabelStyle: {
+                    fontSize: 12,
+                    fontWeight: '500',
+                },
+                tabBarActiveTintColor:
+                    colorScheme === 'light' ? '#000000' : '#61DF6E',
+            }}
+        >
+            <Tabs.Screen
+                name="index"
+                options={{
+                    title: 'Matches',
+                    tabBarIcon: ({ color }) => (
+                        <Ionicons
+                            name="football"
+                            size={24}
+                            style={{ marginBottom: -3 }}
+                            color={color}
+                        />
+                    ),
+                }}
+            />
+
+            <Tabs.Screen
+                name="news"
+                options={{
+                    title: 'News',
+                    tabBarIcon: ({ color }) => (
+                        <Ionicons
+                            name="newspaper"
+                            size={24}
+                            style={{ marginBottom: -3 }}
+                            color={color}
+                        />
+                    ),
+                }}
+            />
+
+            <Tabs.Screen
+                name="leagues"
+                options={{
+                    title: 'Leagues',
+                    tabBarIcon: ({ color }) => (
+                        <TabBarIcon name="trophy" color={color} />
+                    ),
+                }}
+            />
+
+            <Tabs.Screen
+                name="following"
+                options={{
+                    title: 'Following',
+                    tabBarIcon: ({ color }) => (
+                        <TabBarIcon name="star" color={color} />
+                    ),
+                }}
+            />
+
+            <Tabs.Screen
+                name="more"
+                options={{
+                    title: 'More',
+                    tabBarIcon: ({ color }) => (
+                        <Ionicons
+                            name="menu"
+                            size={28}
+                            style={{ marginBottom: -3 }}
+                            color={color}
+                        />
+                    ),
+                }}
+            />
+        </Tabs>
+    )
 }
