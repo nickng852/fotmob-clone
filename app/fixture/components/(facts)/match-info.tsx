@@ -86,12 +86,8 @@ export default function MatchInfo({ fixture, league }: Props) {
                     />
                 }
             >
-                <View className="rounded-full bg-[#F4F4F4] px-2 py-[1px] dark:bg-[#262626]">
-                    <Text
-                        className="text-base text-[#717171] dark:text-[#E6E6E6]"
-                        adjustsFontSizeToFit
-                        numberOfLines={1}
-                    >
+                <View className="rounded-2xl bg-[#F4F4F4] px-2 py-[1px] dark:bg-[#262626]">
+                    <Text className="text-base text-[#717171] dark:text-[#E6E6E6]">
                         {league.name} - {formatRound(league.round)}
                     </Text>
                 </View>
@@ -106,12 +102,8 @@ export default function MatchInfo({ fixture, league }: Props) {
                     />
                 }
             >
-                <View className="rounded-full bg-[#F4F4F4] px-2 py-[1px] dark:bg-[#262626]">
-                    <Text
-                        className="text-base text-[#717171] dark:text-[#E6E6E6]"
-                        adjustsFontSizeToFit
-                        numberOfLines={1}
-                    >
+                <View className="rounded-2xl bg-[#F4F4F4] px-2 py-[1px] dark:bg-[#262626]">
+                    <Text className="text-base text-[#717171] dark:text-[#E6E6E6]">
                         {fixture.venue.name}, {fixture.venue.city}
                     </Text>
                 </View>
