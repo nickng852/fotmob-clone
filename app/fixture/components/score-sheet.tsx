@@ -68,7 +68,7 @@ function ScorerList({
                             'justify-end': side === 'home',
                         })}
                     >
-                        {playerName && (
+                        {playerName !== 'null' && (
                             <Text className="text-sm text-[#5C5C5C] dark:text-[#D0D0D0]">
                                 {getPlayerName(playerName)}{' '}
                             </Text>
