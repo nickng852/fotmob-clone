@@ -219,6 +219,35 @@ function RootLayoutNav() {
                                     headerShadowVisible: false,
                                 }}
                             />
+
+                            <Stack.Screen
+                                name="settings"
+                                options={{
+                                    headerStyle: {
+                                        backgroundColor:
+                                            colorScheme === 'light'
+                                                ? '#FFFFFF'
+                                                : '#1A1A1A',
+                                    },
+                                    headerLeft: () => (
+                                        <TouchableOpacity
+                                            className="-ml-4 p-2"
+                                            onPress={router.back}
+                                        >
+                                            <Ionicons
+                                                name="chevron-back-outline"
+                                                size={28}
+                                                color={
+                                                    colorScheme === 'light'
+                                                        ? '#000000'
+                                                        : '#FFFFFF'
+                                                }
+                                            />
+                                        </TouchableOpacity>
+                                    ),
+                                    headerShadowVisible: false,
+                                }}
+                            />
                         </Stack>
                     </ThemeProvider>
                 </BottomSheetModalProvider>
