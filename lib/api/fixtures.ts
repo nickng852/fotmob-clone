@@ -8,6 +8,7 @@ export const fetchFixtures = async (date: string) => {
         url: 'https://api-football-v1.p.rapidapi.com/v3/fixtures',
         params: {
             date: date,
+            timezone: 'Asia/Hong_Kong',
         },
         headers,
     }
