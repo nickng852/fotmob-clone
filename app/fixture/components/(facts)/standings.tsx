@@ -75,7 +75,7 @@ export default function Standings({
                         padding: 10,
                         borderBottomWidth: !isFiltered ? 0.25 : 0,
                         borderBottomColor:
-                            colorScheme === 'light' ? '#F9FAFB' : '#000000',
+                            colorScheme === 'light' ? '#F0F0F0' : '#000000',
                     }}
                     data={tableHead}
                     flexArr={dimension}
@@ -163,7 +163,7 @@ export default function Standings({
                                                         : 0,
                                                 borderBottomColor:
                                                     colorScheme === 'light'
-                                                        ? '#F9FAFB'
+                                                        ? '#F0F0F0'
                                                         : '#000000',
                                             }}
                                             data={data}
