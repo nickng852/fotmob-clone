@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import { ScrollView, View } from 'react-native'
+import { Circle } from 'react-native-animated-spinkit'
 import { useQuery } from '@tanstack/react-query'
 
 import Events from '@/app/fixture/components/(facts)/events'
@@ -37,53 +38,64 @@ export default function FactsTab({ match }: { match: FixtureObj }) {
     const isSuccess = standingsSuccess && playerStatsSuccess
 
     return (
-        <ScrollView className="bg-[#FAFAFA] dark:bg-black">
-            <View style={{ gap: 12 }} className="p-[10px]">
-                {events.length > 0 && (
-                    <>
-                        <Events
-                            homeTeamId={teams.home.id}
-                            awayTeamId={teams.away.id}
-                            events={events}
-                        />
+        <>
+            {isPending && (
+                <View className="flex-1 items-center justify-center">
+                    <Circle size={24} color="#A1A1AA" />
+                </View>
+            )}
 
-                        {events.filter(
-                            (event) => event.comments === 'Penalty Shootout'
-                        ).length > 0 && (
-                            <PenaltyShootout
-                                homeTeamId={teams.home.id}
-                                awayTeamId={teams.away.id}
-                                events={events.filter(
+            {isSuccess && (
+                <ScrollView className="bg-[#FAFAFA] dark:bg-black">
+                    <View style={{ gap: 12 }} className="p-[10px]">
+                        {events.length > 0 && (
+                            <>
+                                <Events
+                                    homeTeamId={teams.home.id}
+                                    awayTeamId={teams.away.id}
+                                    events={events}
+                                />
+
+                                {events.filter(
                                     (event) =>
                                         event.comments === 'Penalty Shootout'
+                                ).length > 0 && (
+                                    <PenaltyShootout
+                                        homeTeamId={teams.home.id}
+                                        awayTeamId={teams.away.id}
+                                        events={events.filter(
+                                            (event) =>
+                                                event.comments ===
+                                                'Penalty Shootout'
+                                        )}
+                                    />
                                 )}
+                            </>
+                        )}
+
+                        <MatchInfo fixture={fixture} league={league} />
+
+                        {!_.isEmpty(standingsData.response) &&
+                            league.country !== 'World' && (
+                                <Standings
+                                    homeTeamId={teams.home.id}
+                                    awayTeamId={teams.away.id}
+                                    standingsData={standingsData.response[0]}
+                                    isFiltered
+                                />
+                            )}
+
+                        {!_.isEmpty(playerStatsData.response) && (
+                            <TopRatedPlayers
+                                homeTeamId={teams.home.id}
+                                awayTeamId={teams.away.id}
+                                events={events}
+                                playerStats={playerStatsData.response}
                             />
                         )}
-                    </>
-                )}
-
-                <MatchInfo fixture={fixture} league={league} />
-
-                {standingsSuccess &&
-                    !_.isEmpty(standingsData.response) &&
-                    league.country !== 'World' && (
-                        <Standings
-                            homeTeamId={teams.home.id}
-                            awayTeamId={teams.away.id}
-                            standingsData={standingsData.response[0]}
-                            isFiltered
-                        />
-                    )}
-
-                {playerStatsSuccess && !_.isEmpty(playerStatsData.response) && (
-                    <TopRatedPlayers
-                        homeTeamId={teams.home.id}
-                        awayTeamId={teams.away.id}
-                        events={events}
-                        playerStats={playerStatsData.response}
-                    />
-                )}
-            </View>
-        </ScrollView>
+                    </View>
+                </ScrollView>
+            )}
+        </>
     )
 }
