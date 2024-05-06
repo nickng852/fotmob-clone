@@ -27,6 +27,7 @@ export default function Bench({ events, lineUp, playerStats }: Props) {
                                 (substitute: Substitute) => {
                                     return (
                                         <Avatar
+                                            key={substitute.player.id}
                                             type="substitute"
                                             events={events}
                                             playerStats={playerStats}

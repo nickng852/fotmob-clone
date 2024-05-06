@@ -162,6 +162,7 @@ export default function StartingXI({
                                             (startXI: StartXI) => {
                                                 return (
                                                     <Avatar
+                                                        key={startXI.player.id}
                                                         type="startXI"
                                                         events={events}
                                                         playerStats={
