@@ -124,7 +124,7 @@ export default function Avatar({
                             )}
 
                             {getPlayerYellowCards(squad.player.id) && (
-                                <View className="absolute bottom-[15px] left-[7px]">
+                                <View className="absolute -left-[7px] bottom-[15px]">
                                     {getPlayerYellowCards(squad.player.id).map(
                                         (event: Event, index: number) => (
                                             <Badge
@@ -138,7 +138,7 @@ export default function Avatar({
                             )}
 
                             {getPlayerRedCards(squad.player.id) && (
-                                <View className="absolute bottom-[15px] left-[7px]">
+                                <View className="absolute -left-[7px] bottom-[15px]">
                                     {getPlayerRedCards(squad.player.id).map(
                                         (event: Event, index: number) => (
                                             <Badge
