@@ -7,20 +7,11 @@ import { useColorScheme } from 'nativewind'
 import { View, Text, TouchableOpacity } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 
+import { formatPlayerName } from '@/app/fixture/utils/helper'
 import { Event } from '@/lib/types/event'
 import { FixtureObj } from '@/lib/types/fixture'
 
 const R = require('ramda')
-
-function getPlayerName(fullName: string) {
-    return fullName.split(' ').length > 1
-        ? fullName.split(' ').length > 2
-            ? fullName.split(' ')[fullName.split(' ').length - 2] +
-              ' ' +
-              fullName.split(' ')[fullName.split(' ').length - 1]
-            : fullName.split(' ')[fullName.split(' ').length - 1]
-        : fullName
-}
 
 function Team({
     teamId,
@@ -70,7 +61,7 @@ function ScorerList({
                     >
                         {playerName !== 'null' && (
                             <Text className="text-sm text-[#5C5C5C] dark:text-[#D0D0D0]">
-                                {getPlayerName(playerName)}{' '}
+                                {formatPlayerName(playerName)}{' '}
                             </Text>
                         )}
 

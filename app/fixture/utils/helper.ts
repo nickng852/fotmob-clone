@@ -9,10 +9,12 @@ export function getPlayerPhoto(playerId: number) {
 export function formatPlayerName(fullName: string) {
     return fullName.split(' ').length > 1
         ? fullName.split(' ').length > 2
-            ? fullName.split(' ')[fullName.split(' ').length - 2] +
-              ' ' +
-              fullName.split(' ')[fullName.split(' ').length - 1]
-            : fullName.split(' ')[fullName.split(' ').length - 1]
+            ? fullName
+                  .split(' ')
+                  .slice(1)
+                  .map((name: string) => name)
+                  .join(' ')
+            : fullName.split(' ').slice(-1)
         : fullName
 }
 
