@@ -22,7 +22,7 @@ export default function PlayerStatsCard({
 }: Props) {
     return (
         <View className="rounded-xl bg-white shadow-lg dark:bg-[#1D1D1D]">
-            <TouchableOpacity className="flex-row items-center justify-between rounded-t-xl bg-white p-3 dark:bg-[#1D1D1D]">
+            <TouchableOpacity className="flex-row items-center justify-between rounded-t-xl bg-white p-4 dark:bg-[#1D1D1D]">
                 <Text className="text-[17px] font-bold dark:text-white">
                     {title}
                 </Text>
@@ -44,9 +44,9 @@ export default function PlayerStatsCard({
                         >
                             <TouchableOpacity
                                 className={clsx(
-                                    'flex-row items-center justify-between px-4 py-2',
+                                    'flex-row items-center justify-between px-4 py-[10px]',
                                     {
-                                        'rounded-b-xl pb-4':
+                                        'rounded-b-xl pb-[18px]':
                                             index === data.length - 1,
                                     }
                                 )}
