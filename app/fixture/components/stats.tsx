@@ -337,8 +337,9 @@ export default function StatsTab({ match }: { match: FixtureObj }) {
                                                                     >
                                                                         <View
                                                                             className={clsx(
+                                                                                'px-2 py-[1.5px]',
                                                                                 {
-                                                                                    'items-center justify-center rounded-full bg-gray-200 px-[10px] py-[1.5px] dark:bg-gray-500':
+                                                                                    'items-center justify-center rounded-full bg-gray-200 dark:bg-gray-500':
                                                                                         isTeamStatWin(
                                                                                             'home',
                                                                                             type
@@ -346,7 +347,13 @@ export default function StatsTab({ match }: { match: FixtureObj }) {
                                                                                 }
                                                                             )}
                                                                         >
-                                                                            <Text className="text-lg font-semibold dark:text-white">
+                                                                            <Text
+                                                                                className="text-lg font-semibold dark:text-white"
+                                                                                adjustsFontSizeToFit
+                                                                                numberOfLines={
+                                                                                    1
+                                                                                }
+                                                                            >
                                                                                 {homeTeamData
                                                                                     ? type ===
                                                                                       'Passes accurate'
@@ -375,8 +382,9 @@ export default function StatsTab({ match }: { match: FixtureObj }) {
                                                                     >
                                                                         <View
                                                                             className={clsx(
+                                                                                'px-2 py-[1.5px]',
                                                                                 {
-                                                                                    'items-center justify-center rounded-full bg-gray-200 px-[10px] py-[1.5px] dark:bg-gray-500':
+                                                                                    'items-center justify-center rounded-full bg-gray-200 dark:bg-gray-500':
                                                                                         isTeamStatWin(
                                                                                             'away',
                                                                                             type
@@ -384,7 +392,13 @@ export default function StatsTab({ match }: { match: FixtureObj }) {
                                                                                 }
                                                                             )}
                                                                         >
-                                                                            <Text className="text-lg font-semibold dark:text-white">
+                                                                            <Text
+                                                                                className="text-lg font-semibold dark:text-white"
+                                                                                adjustsFontSizeToFit
+                                                                                numberOfLines={
+                                                                                    1
+                                                                                }
+                                                                            >
                                                                                 {awayTeamData
                                                                                     ? type ===
                                                                                       'Passes accurate'

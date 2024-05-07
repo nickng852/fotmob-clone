@@ -69,7 +69,7 @@ export default function PlayerStatsCard({ title, data, path }: Props) {
                                     <View className="basis-16 items-center justify-center">
                                         <View
                                             className={clsx({
-                                                'items-center justify-center rounded-full bg-gray-200 px-[10px] py-[1.5px] dark:bg-gray-500':
+                                                'items-center justify-center rounded-full bg-gray-200 px-2 py-[1.5px] dark:bg-gray-500':
                                                     index + 1 === 1,
                                             })}
                                         >
