@@ -269,15 +269,22 @@ export default function StatsTab({
                                         <View className="relative h-4 rounded-[2.5px] bg-[#F0F0F0] dark:bg-black">
                                             <View
                                                 style={{
-                                                    width: Number(
-                                                        (
-                                                            (penalty.scored
-                                                                .total /
-                                                                goals.for.total
-                                                                    .total) *
-                                                            100
-                                                        ).toFixed()
-                                                    ),
+                                                    width:
+                                                        goals.for.total
+                                                            .total !== 0
+                                                            ? Number(
+                                                                  (
+                                                                      (penalty
+                                                                          .scored
+                                                                          .total /
+                                                                          goals
+                                                                              .for
+                                                                              .total
+                                                                              .total) *
+                                                                      100
+                                                                  ).toFixed()
+                                                              )
+                                                            : 0,
                                                 }}
                                                 className="absolute left-0 top-0 h-4 rounded-l-[2.5px] bg-gray-400"
                                             />
