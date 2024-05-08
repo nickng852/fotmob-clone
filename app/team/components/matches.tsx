@@ -219,7 +219,6 @@ export default function MatchesTab({
                         keyExtractor={(item) => item}
                         renderItem={renderItem}
                         estimatedItemSize={2}
-                        initialScrollIndex={1}
                         contentContainerStyle={{
                             padding: 10,
                         }}
