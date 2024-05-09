@@ -11,7 +11,7 @@ export interface League {
     logo: string
     flag: string
     season: number
-    standings: Club[]
+    standings: Club[][]
 }
 
 export interface Club {
@@ -20,9 +20,9 @@ export interface Club {
     points: number
     goalsDiff: number
     group: string
-    form: string
+    form: null | string
     status: string
-    description: string
+    description: null | string
     all: Stat
     home: Stat
     away: Stat
