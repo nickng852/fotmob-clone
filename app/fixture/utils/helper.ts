@@ -98,7 +98,9 @@ export function useLineup(events: Event[], playerStats: PlayerStats[]) {
     const getPlayerGoals = (playerId: number) =>
         events.filter(
             (event: Event) =>
-                event.type === 'Goal' && event.player.id === playerId
+                event.type === 'Goal' &&
+                event.detail === 'Normal Goal' &&
+                event.player.id === playerId
         )
 
     const getPlayerAssists = (playerId: number) =>
