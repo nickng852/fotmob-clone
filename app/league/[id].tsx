@@ -1,6 +1,7 @@
 import { Image } from 'expo-image'
 import { useLocalSearchParams, Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
+import moment from 'moment'
 import { useColorScheme } from 'nativewind'
 import { View, Text } from 'react-native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
@@ -34,11 +35,22 @@ export default function League() {
 
     const { league, country } = leagueSuccess && leagueData.response[0]
 
-    const coverage =
+    const currentSeason =
         leagueSuccess &&
         leagueData.response[0].seasons.find(
             (season: Season) => season.current === true
-        ).coverage
+        )
+
+    const today = moment().format('YYYY-MM-DD')
+
+    const isCurrentSeasonStarted =
+        currentSeason &&
+        moment(today).isBetween(
+            currentSeason.start,
+            currentSeason.end,
+            null,
+            '[]'
+        )
 
     return (
         <>
@@ -106,7 +118,7 @@ export default function League() {
                         tabBarScrollEnabled: true,
                     }}
                 >
-                    {coverage.standings && (
+                    {currentSeason.coverage.standings && (
                         <Tab.Screen
                             name="Table"
                             children={() => (
@@ -122,16 +134,19 @@ export default function League() {
                         )}
                     />
 
-                    {(coverage.top_scorers ||
-                        coverage.top_assists ||
-                        coverage.top_cards) && (
-                        <Tab.Screen
-                            name="Player stats"
-                            children={() => (
-                                <PlayerStats leagueId={leagueId as string} />
-                            )}
-                        />
-                    )}
+                    {isCurrentSeasonStarted &&
+                        (currentSeason.coverage.top_scorers ||
+                            currentSeason.coverage.top_assists ||
+                            currentSeason.coverage.top_cards) && (
+                            <Tab.Screen
+                                name="Player stats"
+                                children={() => (
+                                    <PlayerStats
+                                        leagueId={leagueId as string}
+                                    />
+                                )}
+                            />
+                        )}
                 </Tab.Navigator>
             )}
         </>
