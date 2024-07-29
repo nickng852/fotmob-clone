@@ -10,6 +10,7 @@ import Fixtures from '@/app/league/components/fixtures'
 import PlayerStats from '@/app/league/components/player-stats'
 import Table from '@/app/league/components/table'
 import { fetchLeagueByLeagueId } from '@/lib/api/leagues'
+import { Season } from '@/lib/types/league'
 
 const Tab = createMaterialTopTabNavigator()
 
@@ -32,6 +33,12 @@ export default function League() {
     const isSuccess = leagueSuccess
 
     const { league, country } = leagueSuccess && leagueData.response[0]
+
+    const coverage =
+        leagueSuccess &&
+        leagueData.response[0].seasons.find(
+            (season: Season) => season.current === true
+        ).coverage
 
     return (
         <>
@@ -65,56 +72,68 @@ export default function League() {
                 )}
             </View>
 
-            <Tab.Navigator
-                backBehavior="none"
-                screenOptions={{
-                    tabBarStyle: {
-                        paddingLeft: 16,
-                        backgroundColor:
-                            colorScheme === 'light' ? '#9CA3AF' : '#1A1A1A',
-                    },
-                    tabBarItemStyle: {
-                        width: 'auto',
-                        paddingHorizontal: 0,
-                    },
-                    tabBarLabelStyle: {
-                        marginHorizontal: 0,
-                        fontSize: 17,
-                        fontWeight: 'bold',
-                        textTransform: 'none',
-                    },
-                    tabBarIndicatorContainerStyle: {
-                        marginLeft: 16,
-                    },
-                    tabBarIndicatorStyle: {
-                        height: 3.5,
-                        backgroundColor:
-                            colorScheme === 'light' ? '#FFFFFF' : '#61DF6E',
-                    },
-                    tabBarActiveTintColor: '#FFFFFF',
-                    tabBarInactiveTintColor:
-                        colorScheme === 'light' ? '#E5E7EB' : '#A3A3A3',
-                    tabBarGap: 28,
-                    tabBarScrollEnabled: true,
-                }}
-            >
-                <Tab.Screen
-                    name="Table"
-                    children={() => <Table leagueId={leagueId as string} />}
-                />
-
-                <Tab.Screen
-                    name="Fixtures"
-                    children={() => <Fixtures leagueId={leagueId as string} />}
-                />
-
-                <Tab.Screen
-                    name="Player stats"
-                    children={() => (
-                        <PlayerStats leagueId={leagueId as string} />
+            {isSuccess && (
+                <Tab.Navigator
+                    backBehavior="none"
+                    screenOptions={{
+                        tabBarStyle: {
+                            paddingLeft: 16,
+                            backgroundColor:
+                                colorScheme === 'light' ? '#9CA3AF' : '#1A1A1A',
+                        },
+                        tabBarItemStyle: {
+                            width: 'auto',
+                            paddingHorizontal: 0,
+                        },
+                        tabBarLabelStyle: {
+                            marginHorizontal: 0,
+                            fontSize: 17,
+                            fontWeight: 'bold',
+                            textTransform: 'none',
+                        },
+                        tabBarIndicatorContainerStyle: {
+                            marginLeft: 16,
+                        },
+                        tabBarIndicatorStyle: {
+                            height: 3.5,
+                            backgroundColor:
+                                colorScheme === 'light' ? '#FFFFFF' : '#61DF6E',
+                        },
+                        tabBarActiveTintColor: '#FFFFFF',
+                        tabBarInactiveTintColor:
+                            colorScheme === 'light' ? '#E5E7EB' : '#A3A3A3',
+                        tabBarGap: 28,
+                        tabBarScrollEnabled: true,
+                    }}
+                >
+                    {coverage.standings && (
+                        <Tab.Screen
+                            name="Table"
+                            children={() => (
+                                <Table leagueId={leagueId as string} />
+                            )}
+                        />
                     )}
-                />
-            </Tab.Navigator>
+
+                    <Tab.Screen
+                        name="Fixtures"
+                        children={() => (
+                            <Fixtures leagueId={leagueId as string} />
+                        )}
+                    />
+
+                    {(coverage.top_scorers ||
+                        coverage.top_assists ||
+                        coverage.top_cards) && (
+                        <Tab.Screen
+                            name="Player stats"
+                            children={() => (
+                                <PlayerStats leagueId={leagueId as string} />
+                            )}
+                        />
+                    )}
+                </Tab.Navigator>
+            )}
         </>
     )
 }
