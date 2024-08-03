@@ -18,13 +18,19 @@ export default function PenaltyShootout({
     awayTeamId,
     events,
 }: Props) {
+    const penaltyShootoutEvents = events.filter(
+        (event: Event) =>
+            event.type && event.detail && event.comments === 'Penalty Shootout'
+    )
+
+    // TODO: should use event sequence to count scores for each team
     const getCurrentGoalByTeamId = (teamId: number, time: Time) => {
-        return events.filter(
+        return penaltyShootoutEvents.filter(
             (event: Event) =>
                 event.time.elapsed + (event.time.extra as number) <=
                     time.elapsed + (time.extra as number) &&
-                event.detail === 'Penalty' &&
-                event.team.id === teamId
+                event.team.id === teamId &&
+                event.detail === 'Penalty'
         ).length
     }
 
@@ -33,7 +39,7 @@ export default function PenaltyShootout({
             <Text className="flex-1 text-base font-bold">Penalty shootout</Text>
 
             <View className="space-y-2">
-                {events.map((event: Event, index: number) => {
+                {penaltyShootoutEvents.map((event: Event, index: number) => {
                     return (
                         <View
                             key={index}

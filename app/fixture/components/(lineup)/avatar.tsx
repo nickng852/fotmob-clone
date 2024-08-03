@@ -72,6 +72,7 @@ export default function Avatar({
                                             squad.player.id
                                         ) as number
                                     }
+                                    isGoalkeeper={squad.player.pos === 'G'}
                                 />
                             )}
 
@@ -158,7 +159,7 @@ export default function Avatar({
                     <View className="flex-row items-center">
                         {isPlayerCaptain(lineup.team.id, squad.player.id) && (
                             <>
-                                <View className="h-[11px] w-[11px] items-center justify-center rounded bg-white p-[1px]">
+                                <View className="h-[11px] w-[11px] items-center justify-center rounded-full bg-white p-[1px]">
                                     <Text className="text-center text-[8px] font-bold text-gray-900">
                                         C
                                     </Text>
