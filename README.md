@@ -33,18 +33,17 @@
 
 <h3 align="center">fotmob-clone</h3>
 
-  <p align="center">
-    **Clone version** of FotMob app
-    <br />
-    <a href="https://github.com/nickng852/fotmob-clone"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/nickng852/fotmob-clone">View Demo</a>
-    ·
-    <a href="https://github.com/nickng852/fotmob-clone/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    ·
-    <a href="https://github.com/nickng852/fotmob-clone/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
-  </p>
+**_clone version_** of FotMob app
+<br />
+<a href="https://github.com/nickng852/fotmob-clone"><strong>Explore the docs »</strong></a>
+<br />
+<br />
+<a href="https://github.com/nickng852/fotmob-clone">View Demo</a>
+·
+<a href="https://github.com/nickng852/fotmob-clone/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+·
+<a href="https://github.com/nickng852/fotmob-clone/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+
 </div>
 
 <!-- TABLE OF CONTENTS -->
@@ -106,21 +105,30 @@ This is an example of how to list things you need to use the software and how to
 ### Installation
 
 1. Get a free API Key at [https://rapidapi.com/api-sports/api/api-football](https://rapidapi.com/api-sports/api/api-football)
+
 2. Clone the repo
+
     ```sh
     git clone https://github.com/nickng852/fotmob-clone.git
     ```
+
 3. Install NPM packages
+
     ```sh
     npm install
     ```
+
 4. Create a `.env` file under the root directory
+
 5. Enter your API in `.env`
+
     ```env
     RAPID_API_KEY={YOUR_API_KEY}
     RAPID_API_HOST={YOUR_API_HOST}
     ```
+
 6. Run the project
+
     ```sh
     npx expo start
     ```
