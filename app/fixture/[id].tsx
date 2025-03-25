@@ -12,14 +12,17 @@ import ScoreSheet from '@/app/fixture/components/score-sheet'
 import Stats from '@/app/fixture/components/stats'
 import Table from '@/app/fixture/components/table'
 import { fetchFixtureByFixtureId } from '@/lib/api/fixtures'
+import { fetchLeagueByLeagueId } from '@/lib/api/leagues'
+import { Season } from '@/lib/types/league'
 
 const Tab = createMaterialTopTabNavigator()
 
 export default function Match() {
     const { colorScheme } = useColorScheme()
-    const { id: fixtureId } = useLocalSearchParams()
+    const { id: fixtureId, leagueId } = useLocalSearchParams()
 
     console.log('fixtureId:', fixtureId)
+    console.log('leagueId:', leagueId)
 
     const {
         isPending: fixturesPending,
@@ -31,10 +34,25 @@ export default function Match() {
         // refetchInterval: 60000,
     })
 
-    const isPending = fixturesPending
-    const isSuccess = fixturesSuccess
+    const {
+        isPending: leaguePending,
+        isSuccess: leagueSuccess,
+        data: leagueData,
+    } = useQuery({
+        queryKey: ['leagues', leagueId],
+        queryFn: () => fetchLeagueByLeagueId(leagueId as string),
+    })
+
+    const isPending = fixturesPending || leaguePending
+    const isSuccess = fixturesSuccess && leagueSuccess
 
     const match = fixturesSuccess && fixturesData.response[0]
+
+    const coverage =
+        leagueSuccess &&
+        leagueData.response[0].seasons.find(
+            (season: Season) => season.current === true
+        ).coverage
 
     return (
         <>
@@ -43,7 +61,7 @@ export default function Match() {
             <StatusBar style={colorScheme === 'light' ? 'dark' : 'light'} />
 
             {isPending && (
-                <View className="flex-1 items-center justify-center dark:bg-[#1D1D1D]">
+                <View className="flex-1 items-center justify-center bg-white dark:bg-[#1A1A1A]">
                     <Circle size={24} color="#a1a1aa" />
                 </View>
             )}
@@ -55,6 +73,8 @@ export default function Match() {
                     <Tab.Navigator
                         backBehavior="none"
                         screenOptions={{
+                            lazy: true,
+                            lazyPreloadDistance: 1,
                             tabBarStyle: {
                                 paddingLeft: 16,
                                 backgroundColor:
@@ -99,24 +119,29 @@ export default function Match() {
                             children={() => <Facts match={match} />}
                         />
 
-                        <Tab.Screen
-                            name="Lineup"
-                            children={() => <Lineup match={match} />}
-                        />
-
-                        {match.league.country !== 'World' && (
+                        {(coverage.fixtures.lineups || coverage.injuries) && (
                             <Tab.Screen
-                                name="Table"
-                                children={() => <Table match={match} />}
+                                name="Lineup"
+                                children={() => <Lineup match={match} />}
                             />
                         )}
 
-                        {match.fixture.status.short !== 'NS' && (
-                            <Tab.Screen
-                                name="Stats"
-                                children={() => <Stats match={match} />}
-                            />
-                        )}
+                        {coverage.standings &&
+                            match.league.country !== 'World' && (
+                                <Tab.Screen
+                                    name="Table"
+                                    children={() => <Table match={match} />}
+                                />
+                            )}
+
+                        {(coverage.fixtures.statistics_fixtures ||
+                            coverage.fixtures.statistics_players) &&
+                            match.fixture.status.short !== 'NS' && (
+                                <Tab.Screen
+                                    name="Stats"
+                                    children={() => <Stats match={match} />}
+                                />
+                            )}
                     </Tab.Navigator>
                 </>
             )}
