@@ -30,7 +30,7 @@ export default function TopRatedPlayers({
 
     return (
         <View className="space-y-4 rounded-xl bg-white p-4 shadow-lg dark:bg-[#1D1D1D]">
-            <Text className="flex-1 text-base font-bold dark:text-white">
+            <Text className="flex-1 text-base font-bold text-[#333333] dark:text-white">
                 Top rated
             </Text>
 
