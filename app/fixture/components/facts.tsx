@@ -13,7 +13,7 @@ import { fetchStandings } from '@/lib/api/standings'
 import { FixtureObj } from '@/lib/types/fixture'
 
 export default function FactsTab({ match }: { match: FixtureObj }) {
-    const { fixture, league, teams, events } = match
+    const { fixture, league, teams, score, events } = match
 
     const {
         isPending: standingsPending,
@@ -53,6 +53,7 @@ export default function FactsTab({ match }: { match: FixtureObj }) {
                                 <Events
                                     homeTeamId={teams.home.id}
                                     awayTeamId={teams.away.id}
+                                    score={score}
                                     events={events}
                                 />
 

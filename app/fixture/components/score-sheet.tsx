@@ -107,9 +107,10 @@ export default function ScoreSheet({ match }: { match: FixtureObj }) {
 
     const homeTeamScoreSheet = events.filter(
         (event: Event) =>
+            event.team.id === teams.home.id &&
             event.type === 'Goal' &&
-            event.comments !== 'Penalty Shootout' &&
-            event.team.id === teams.home.id
+            event.detail !== 'Missed Penalty' &&
+            event.comments !== 'Penalty Shootout'
     )
 
     const homeTeamScorers = R.groupBy(
@@ -119,9 +120,10 @@ export default function ScoreSheet({ match }: { match: FixtureObj }) {
 
     const awayTeamScoreSheet = events.filter(
         (event: Event) =>
+            event.team.id === teams.away.id &&
             event.type === 'Goal' &&
-            event.comments !== 'Penalty Shootout' &&
-            event.team.id === teams.away.id
+            event.detail !== 'Missed Penalty' &&
+            event.comments !== 'Penalty Shootout'
     )
 
     const awayTeamScorers = R.groupBy(

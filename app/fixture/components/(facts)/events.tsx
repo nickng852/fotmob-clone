@@ -6,49 +6,128 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 
 import Badge from '@/app/fixture/components/(lineup)/badge'
 import { Event } from '@/lib/types/event'
+import { Score } from '@/lib/types/score'
 
 interface Props {
     homeTeamId: number
     awayTeamId: number
+    score: Score
     events: Event[]
 }
 
-export default function Events({ homeTeamId, awayTeamId, events }: Props) {
+export default function Events({
+    homeTeamId,
+    awayTeamId,
+    score,
+    events,
+}: Props) {
     const { colorScheme } = useColorScheme()
 
     const getCurrentGoalByTeamId = (teamId: number, time: number) => {
         return events.filter(
             (event: Event) =>
                 event.time.elapsed <= time &&
+                event.team.id === teamId &&
                 event.type === 'Goal' &&
-                event.team.id === teamId
+                event.detail !== 'Missed Penalty'
         ).length
     }
 
+    // Add events for half-time, full-time and extra-time etc
+    const createPeriodEvent = (detail: string, elapsed: number): Event => ({
+        time: { elapsed, extra: null },
+        team: { id: 0, name: '', logo: '' },
+        player: { name: '', id: 0 },
+        assist: { name: '', id: 0 },
+        type: 'Period',
+        detail,
+        comments: '',
+    })
+
+    // Combine all events and sort them by elapsed time
+    const allEvents = [
+        ...events.filter((event) => event.comments !== 'Penalty Shootout'),
+        createPeriodEvent('halftime', 45),
+        createPeriodEvent('fulltime', 90),
+        ...(score.extratime?.home !== null
+            ? [createPeriodEvent('extratime', 120)]
+            : []),
+        ...(score.penalty?.home !== null
+            ? [createPeriodEvent('penalty', 121)]
+            : []),
+    ].sort((a, b) => a.time.elapsed - b.time.elapsed)
+
     return (
         <View className="space-y-5 rounded-xl bg-white px-4 py-6 shadow-lg dark:bg-[#1D1D1D]">
-            {events
-                .filter((event) => event.comments !== 'Penalty Shootout')
-                .map((event: Event, index: number) => {
+            {allEvents.map((event: Event, index: number) => {
+                if (event.type === 'Period') {
+                    let scoreText = `${getCurrentGoalByTeamId(homeTeamId, event.time.elapsed)} - ${getCurrentGoalByTeamId(awayTeamId, event.time.elapsed)}`
+
                     return (
                         <View
                             key={index}
-                            style={{ gap: 10 }}
-                            className={clsx('w-full flex-row items-center', {
+                            className="flex-row items-center space-x-2"
+                        >
+                            <View className="h-[0.5px] flex-1 bg-[#F4F4F4] dark:bg-black" />
+
+                            <View className="flex-row items-center space-x-2">
+                                <View
+                                    className={clsx(
+                                        'h-7 w-7 items-center justify-center rounded-full border-2 border-[#333333] dark:border-[#FFFFFF]'
+                                    )}
+                                >
+                                    <Text
+                                        className={clsx(
+                                            'text-xs font-bold text-[#333333] dark:text-[#FFFFFF]'
+                                        )}
+                                    >
+                                        {event.detail === 'halftime' && 'HT'}
+                                        {event.detail === 'fulltime' && 'FT'}
+                                        {event.detail === 'extratime' && 'AET'}
+                                    </Text>
+                                </View>
+
+                                <Text className="text-sm text-[#333333] dark:text-white">
+                                    {scoreText}
+                                </Text>
+                            </View>
+
+                            <View className="h-[0.5px] flex-1 bg-[#F4F4F4] dark:bg-black" />
+                        </View>
+                    )
+                }
+
+                return (
+                    <View
+                        key={index}
+                        style={{ gap: 10 }}
+                        className={clsx('w-full flex-row items-center', {
+                            'flex-row-reverse': event.team.id === awayTeamId,
+                        })}
+                    >
+                        <View
+                            className={clsx('flex-row items-center', {
                                 'flex-row-reverse':
                                     event.team.id === awayTeamId,
                             })}
                         >
-                            <View
-                                className={clsx('flex-row items-center', {
-                                    'flex-row-reverse':
-                                        event.team.id === awayTeamId,
-                                })}
-                            >
-                                <View className="basis-9">
+                            <View className="basis-9">
+                                <Text
+                                    className={clsx(
+                                        'text-base font-semibold dark:text-white',
+                                        {
+                                            'text-right':
+                                                event.team.id === awayTeamId,
+                                        }
+                                    )}
+                                >
+                                    {event.time.elapsed}'
+                                </Text>
+
+                                {event.time.extra && (
                                     <Text
                                         className={clsx(
-                                            'text-base font-semibold dark:text-white',
+                                            'text-[13px] font-extrabold text-[#6B7280] dark:text-[#9F9F9F]',
                                             {
                                                 'text-right':
                                                     event.team.id ===
@@ -56,27 +135,14 @@ export default function Events({ homeTeamId, awayTeamId, events }: Props) {
                                             }
                                         )}
                                     >
-                                        {event.time.elapsed}'
+                                        +{event.time.extra}'
                                     </Text>
+                                )}
+                            </View>
 
-                                    {event.time.extra && (
-                                        <Text
-                                            className={clsx(
-                                                'text-[13px] font-extrabold text-[#6B7280]',
-                                                {
-                                                    'text-right':
-                                                        event.team.id ===
-                                                        awayTeamId,
-                                                }
-                                            )}
-                                        >
-                                            +{event.time.extra}'
-                                        </Text>
-                                    )}
-                                </View>
-
-                                <View className="basis-6 items-center justify-center">
-                                    {event.type === 'Goal' && (
+                            <View className="basis-6 items-center justify-center">
+                                {event.type === 'Goal' &&
+                                    event.detail !== 'Missed Penalty' && (
                                         <Ionicons
                                             name="football"
                                             size={22}
@@ -85,145 +151,150 @@ export default function Events({ homeTeamId, awayTeamId, events }: Props) {
                                                     ? '#E55E5B'
                                                     : colorScheme === 'light'
                                                       ? '#4B4C69'
-                                                      : '#333333'
+                                                      : '#FFFFFF'
                                             }
                                         />
                                     )}
 
-                                    {event.type === 'Card' && (
-                                        <View
-                                            className={clsx(
-                                                'h-[20px] w-[15.5px] rounded-[3px]',
-                                                {
-                                                    'bg-yellowcard':
-                                                        event.detail ===
-                                                        'Yellow Card',
-                                                    'bg-redcard':
-                                                        event.detail ===
-                                                        'Red Card',
-                                                }
-                                            )}
-                                        />
-                                    )}
-
-                                    {event.type === 'subst' && (
-                                        <View className="space-y-1">
-                                            <View
-                                                className={clsx({
-                                                    '-scale-x-100':
-                                                        event.team.id ===
-                                                        awayTeamId,
-                                                })}
-                                            >
-                                                <Badge
-                                                    type="substitution"
-                                                    subType="in"
-                                                />
-                                            </View>
-
-                                            <View
-                                                className={clsx({
-                                                    '-scale-x-100':
-                                                        event.team.id ===
-                                                        awayTeamId,
-                                                })}
-                                            >
-                                                <Badge
-                                                    type="substitution"
-                                                    subType="out"
-                                                />
-                                            </View>
-                                        </View>
-                                    )}
-
-                                    {event.type === 'Var' && (
+                                {event.type === 'Goal' &&
+                                    event.detail === 'Missed Penalty' && (
                                         <MaterialIcons
                                             name="screenshot-monitor"
-                                            size={24}
+                                            size={22}
                                             color={
                                                 colorScheme === 'light'
                                                     ? '#4B4C69'
-                                                    : '#6A80AC'
+                                                    : '#FFFFFF'
                                             }
                                         />
                                     )}
-                                </View>
-                            </View>
 
-                            <View className="flex-1">
-                                {event.type === 'Goal' && (
-                                    <View>
+                                {event.type === 'Card' && (
+                                    <View
+                                        className={clsx(
+                                            'h-[20px] w-[15.5px] rounded-[3px]',
+                                            {
+                                                'bg-yellowcard':
+                                                    event.detail ===
+                                                    'Yellow Card',
+                                                'bg-redcard':
+                                                    event.detail === 'Red Card',
+                                            }
+                                        )}
+                                    />
+                                )}
+
+                                {event.type === 'subst' && (
+                                    <View className="space-y-1">
+                                        <View
+                                            className={clsx({
+                                                '-scale-x-100':
+                                                    event.team.id ===
+                                                    awayTeamId,
+                                            })}
+                                        >
+                                            <Badge
+                                                type="substitution"
+                                                subType="in"
+                                            />
+                                        </View>
+
+                                        <View
+                                            className={clsx({
+                                                '-scale-x-100':
+                                                    event.team.id ===
+                                                    awayTeamId,
+                                            })}
+                                        >
+                                            <Badge
+                                                type="substitution"
+                                                subType="out"
+                                            />
+                                        </View>
+                                    </View>
+                                )}
+
+                                {event.type === 'Var' && (
+                                    <MaterialIcons
+                                        name="screenshot-monitor"
+                                        size={24}
+                                        color={
+                                            colorScheme === 'light'
+                                                ? '#4B4C69'
+                                                : '#6A80AC'
+                                        }
+                                    />
+                                )}
+                            </View>
+                        </View>
+
+                        <View className="flex-1">
+                            {event.type === 'Goal' && (
+                                <View>
+                                    <View
+                                        className={clsx(
+                                            `flex-row items-center space-x-1`,
+                                            {
+                                                'justify-end':
+                                                    event.team.id ===
+                                                    awayTeamId,
+                                            }
+                                        )}
+                                    >
                                         <Text
                                             className={clsx(
-                                                'text-base dark:text-white',
-                                                {
-                                                    'text-right':
-                                                        event.team.id ===
-                                                        awayTeamId,
-                                                }
+                                                'text-base dark:text-white'
                                             )}
                                         >
-                                            {event.player.name} (
-                                            <Text
-                                                className={clsx(
-                                                    'text-base dark:text-white',
-                                                    {
-                                                        'text-[#15803D]':
-                                                            event.team.id ===
-                                                            homeTeamId,
-                                                    }
-                                                )}
-                                            >
-                                                {getCurrentGoalByTeamId(
-                                                    homeTeamId,
-                                                    event.time.elapsed
-                                                )}
-                                            </Text>
-                                            <Text className="text-base dark:text-white">
-                                                {' '}
-                                                -{' '}
-                                            </Text>
-                                            <Text
-                                                className={clsx(
-                                                    'text-base dark:text-white',
-                                                    {
-                                                        'text-[#15803D]':
-                                                            event.team.id ===
-                                                            awayTeamId,
-                                                    }
-                                                )}
-                                            >
-                                                {getCurrentGoalByTeamId(
-                                                    awayTeamId,
-                                                    event.time.elapsed
-                                                )}
-                                            </Text>
-                                            )
+                                            {event.player.name}
                                         </Text>
 
-                                        {event.detail === 'Normal Goal' &&
-                                            event.assist.id && (
+                                        {event.detail !== 'Missed Penalty' && (
+                                            <Text className="text-base dark:text-white">
+                                                (
                                                 <Text
                                                     className={clsx(
-                                                        'text-[#6B7280] dark:text-white',
+                                                        'text-base dark:text-white',
                                                         {
-                                                            'text-right':
+                                                            'text-[#15803D]':
+                                                                event.team
+                                                                    .id ===
+                                                                homeTeamId,
+                                                        }
+                                                    )}
+                                                >
+                                                    {getCurrentGoalByTeamId(
+                                                        homeTeamId,
+                                                        event.time.elapsed
+                                                    )}
+                                                </Text>{' '}
+                                                -{' '}
+                                                <Text
+                                                    className={clsx(
+                                                        'text-base dark:text-white',
+                                                        {
+                                                            'text-[#15803D]':
                                                                 event.team
                                                                     .id ===
                                                                 awayTeamId,
                                                         }
                                                     )}
                                                 >
-                                                    Assist by{' '}
-                                                    {event.assist.name}
+                                                    {getCurrentGoalByTeamId(
+                                                        awayTeamId,
+                                                        event.time.elapsed
+                                                    )}
                                                 </Text>
-                                            )}
+                                                )
+                                            </Text>
+                                        )}
+                                    </View>
 
-                                        {(event.detail === 'Penalty' ||
-                                            event.detail === 'Own Goal') && (
+                                    {event.detail === 'Normal Goal' &&
+                                        event.assist.id && (
                                             <Text
                                                 className={clsx(
-                                                    'text-[#6B7280] dark:text-[#9F9F9F]',
+                                                    'text-[#6B7280] dark:text-white',
                                                     {
                                                         'text-right':
                                                             event.team.id ===
@@ -231,13 +302,75 @@ export default function Events({ homeTeamId, awayTeamId, events }: Props) {
                                                     }
                                                 )}
                                             >
-                                                {event.detail}
+                                                Assist by {event.assist.name}
                                             </Text>
                                         )}
-                                    </View>
-                                )}
 
-                                {event.type === 'Card' && (
+                                    {(event.detail === 'Penalty' ||
+                                        event.detail === 'Missed Penalty' ||
+                                        event.detail === 'Own Goal') && (
+                                        <Text
+                                            className={clsx(
+                                                'text-[#6B7280] dark:text-[#9F9F9F]',
+                                                {
+                                                    'text-right':
+                                                        event.team.id ===
+                                                        awayTeamId,
+                                                }
+                                            )}
+                                        >
+                                            {event.detail}
+                                        </Text>
+                                    )}
+                                </View>
+                            )}
+
+                            {event.type === 'Card' && (
+                                <Text
+                                    className={clsx(
+                                        'text-base dark:text-white',
+                                        {
+                                            'text-right':
+                                                event.team.id === awayTeamId,
+                                        }
+                                    )}
+                                >
+                                    {event.player.name}
+                                </Text>
+                            )}
+
+                            {event.type === 'subst' && (
+                                <View>
+                                    <Text
+                                        className={clsx(
+                                            'text-base text-[#03975F]',
+                                            {
+                                                'text-right':
+                                                    event.team.id ===
+                                                    awayTeamId,
+                                            }
+                                        )}
+                                    >
+                                        {event.assist.name}
+                                    </Text>
+
+                                    <Text
+                                        className={clsx(
+                                            'text-base text-[#E55D5B]',
+                                            {
+                                                'text-right':
+                                                    event.team.id ===
+                                                    awayTeamId,
+                                            }
+                                        )}
+                                    >
+                                        {event.player.name}
+                                    </Text>
+                                </View>
+                            )}
+
+                            {event.type === 'Var' && (
+                                <View>
                                     <Text
                                         className={clsx(
                                             'text-base dark:text-white',
@@ -248,73 +381,27 @@ export default function Events({ homeTeamId, awayTeamId, events }: Props) {
                                             }
                                         )}
                                     >
+                                        {event.detail}
+                                    </Text>
+
+                                    <Text
+                                        className={clsx(
+                                            'text-[#6B7280] dark:text-white',
+                                            {
+                                                'text-right':
+                                                    event.team.id ===
+                                                    awayTeamId,
+                                            }
+                                        )}
+                                    >
                                         {event.player.name}
                                     </Text>
-                                )}
-
-                                {event.type === 'subst' && (
-                                    <View>
-                                        <Text
-                                            className={clsx(
-                                                'text-base text-[#03975F]',
-                                                {
-                                                    'text-right':
-                                                        event.team.id ===
-                                                        awayTeamId,
-                                                }
-                                            )}
-                                        >
-                                            {event.assist.name}
-                                        </Text>
-
-                                        <Text
-                                            className={clsx(
-                                                'text-base text-[#E55D5B]',
-                                                {
-                                                    'text-right':
-                                                        event.team.id ===
-                                                        awayTeamId,
-                                                }
-                                            )}
-                                        >
-                                            {event.player.name}
-                                        </Text>
-                                    </View>
-                                )}
-
-                                {event.type === 'Var' && (
-                                    <View>
-                                        <Text
-                                            className={clsx(
-                                                'text-base dark:text-white',
-                                                {
-                                                    'text-right':
-                                                        event.team.id ===
-                                                        awayTeamId,
-                                                }
-                                            )}
-                                        >
-                                            {event.detail}
-                                        </Text>
-
-                                        <Text
-                                            className={clsx(
-                                                'text-[#6B7280] dark:text-white',
-                                                {
-                                                    'text-right':
-                                                        event.team.id ===
-                                                        awayTeamId,
-                                                }
-                                            )}
-                                        >
-                                            {event.player.name}
-                                        </Text>
-                                    </View>
-                                )}
-                            </View>
+                                </View>
+                            )}
                         </View>
-                    )
-                })}
+                    </View>
+                )
+            })}
         </View>
     )
 }
