@@ -10,7 +10,7 @@ export default function Badge({ type, value }: Props) {
     return (
         <View
             className={clsx(
-                'h-6 w-6 items-center justify-center rounded-full',
+                'items-center justify-center rounded-full px-[5.5px] py-[1.25px]',
                 {
                     'bg-[#F5F5F7] dark:bg-[#262626]': type === 'text',
                     'bg-[#02985F]': type === 'number' || value === 'HT',
