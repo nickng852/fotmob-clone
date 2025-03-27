@@ -110,27 +110,24 @@ export default function StatsTab({ match }: { match: FixtureObj }) {
         .flat()
 
     const topThreePlayersByTotalShots = allPlayers
-        ?.sort(
-            (a: Players, b: Players) =>
-                (b.statistics[0].shots.total as number) -
-                (a.statistics[0].shots.total as number)
-        )
+        ?.map((player: Players) => ({
+            ...player.player,
+            value: player.statistics[0].shots.total ?? 0,
+        }))
         .slice(0, 3)
 
     const topThreePlayersByAccPasses = allPlayers
-        ?.sort(
-            (a: Players, b: Players) =>
-                (b.statistics[0].passes.total as number) -
-                (a.statistics[0].passes.total as number)
-        )
+        ?.map((player: Players) => ({
+            ...player.player,
+            value: player.statistics[0].passes.total ?? 0,
+        }))
         .slice(0, 3)
 
     const topThreePlayersByTacklesWon = allPlayers
-        ?.sort(
-            (a: Players, b: Players) =>
-                (b.statistics[0].tackles.total as number) -
-                (a.statistics[0].tackles.total as number)
-        )
+        ?.map((player: Players) => ({
+            ...player.player,
+            value: player.statistics[0].tackles.total ?? 0,
+        }))
         .slice(0, 3)
 
     const getTeamLogo = (playerId: number) => {
