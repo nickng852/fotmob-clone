@@ -43,7 +43,7 @@ export default function Fixture({
                             fixture.status.short === 'AWD') && (
                             <Badge
                                 type="text"
-                                value={fixture.status.short.slice(0, 2)}
+                                value={fixture.status.short.slice(0, 3)}
                             />
                         )}
 
