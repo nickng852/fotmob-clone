@@ -49,8 +49,10 @@ export default function PenaltyShootout({
     }
 
     return (
-        <View className="space-y-[34px] rounded-xl bg-white p-4 shadow-lg">
-            <Text className="flex-1 text-base font-bold">Penalty shootout</Text>
+        <View className="space-y-[34px] rounded-xl bg-white p-4 shadow-lg dark:bg-[#1D1D1D]">
+            <Text className="flex-1 text-base font-bold dark:text-white">
+                Penalty shootout
+            </Text>
 
             <View className="space-y-2">
                 {penaltyShootoutEvents.map((event: Event, index: number) => {
@@ -65,13 +67,13 @@ export default function PenaltyShootout({
                         >
                             <View>
                                 <Image
-                                    className="relative h-10 w-10 rounded-full border-[1px] border-gray-200"
+                                    className="relative h-10 w-10 rounded-full"
                                     source={getPlayerPhoto(event.player.id)}
                                     contentFit="cover"
                                     transition={500}
                                 />
 
-                                <View className="absolute -bottom-1 -right-1 h-5 w-5 items-center justify-center rounded-full bg-white">
+                                <View className="absolute -bottom-1 -right-1 h-5 w-5 items-center justify-center rounded-full bg-white dark:bg-[#1D1D1D]">
                                     {event.detail === 'Penalty' && (
                                         <FontAwesome
                                             name="check-circle"
@@ -91,7 +93,7 @@ export default function PenaltyShootout({
                             </View>
 
                             <View>
-                                <Text className="text-[17px]">
+                                <Text className="text-[17px] dark:text-white">
                                     {event.player.name}
                                 </Text>
 
@@ -103,9 +105,9 @@ export default function PenaltyShootout({
                                 >
                                     <Text
                                         className={clsx(
-                                            'text-base text-[#717171]',
+                                            'text-base text-[#717171] dark:text-[#9F9F9F]',
                                             {
-                                                'text-[#15803D]':
+                                                'text-[#15803D] dark:text-[#00975E]':
                                                     event.team.id ===
                                                         homeTeamId &&
                                                     event.detail === 'Penalty',
@@ -118,16 +120,16 @@ export default function PenaltyShootout({
                                         )}
                                     </Text>
 
-                                    <Text className="text-base text-[#717171]">
+                                    <Text className="text-base text-[#717171] dark:text-[#9F9F9F]">
                                         {' '}
                                         -{' '}
                                     </Text>
 
                                     <Text
                                         className={clsx(
-                                            'text-base text-[#717171]',
+                                            'text-base text-[#717171] dark:text-[#9F9F9F]',
                                             {
-                                                'text-[#15803D]':
+                                                'text-[#15803D] dark:text-[#00975E]':
                                                     event.team.id ===
                                                         awayTeamId &&
                                                     event.detail === 'Penalty',
